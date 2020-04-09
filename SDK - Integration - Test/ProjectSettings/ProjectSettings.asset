@@ -757,10 +757,10 @@ PlayerSettings:
     m_VersionCode: 1
     m_VersionName: 
   apiCompatibilityLevel: 6
-  cloudProjectId: 
+  cloudProjectId: 2a6ac839-a25e-4e4e-93a9-d3a9b5e1659a
   framebufferDepthMemorylessMode: 0
-  projectName: 
-  organizationId: 
+  projectName: SDK - Integration - Test
+  organizationId: hasan_unity435
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0
