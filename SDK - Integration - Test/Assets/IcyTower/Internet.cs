@@ -12,14 +12,14 @@ public class Internet
 
             using (var stream = client.OpenRead("http://www.google.com"))
             {
-                Debug.Log("Connection Succeed.");
+                //Debug.Log("Connection Succeed.");
 
                 return true;
             }
         }
         catch
         {
-            Debug.LogError("Connection Failed.");
+            //Debug.LogError("Connection Failed.");
 
             return false;
         }

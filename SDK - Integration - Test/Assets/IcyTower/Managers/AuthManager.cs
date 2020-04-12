@@ -16,6 +16,8 @@ public class AuthManager : LoadManager
     // That's total Status
     private bool _authManagerStatus;
 
+    public bool _startService;
+
     /// <summary>
     /// /////////////////////////// SILINECEK
     /// </summary>
@@ -30,8 +32,11 @@ public class AuthManager : LoadManager
     public Text _recoverPopUpGPGSText;
 
     // Constructor that initializes Action subscriptions.
-    public AuthManager( )
+    public void StartProcess( )
     {
+        // Store service status
+        _startService = true;
+
         // Subscribe AuthManager Action Events.
         HandleAuthManagerEvents(true);
 
@@ -133,6 +138,10 @@ public class AuthManager : LoadManager
         // Facebook Initializion succeed.
         // Initialize Google Play Services
         _gpgsAuth = new PlayFabGPGS(_recoverPopUpGPGS);
+
+        // Invoke GooglePlay Inıtialization Succeed
+        EventManager.current.StartGooglePlayInitializionSucceed();
+
     }
 
     // 2.1
@@ -189,7 +198,15 @@ public class AuthManager : LoadManager
         // Not LoggedIn before with GPGS
         else
         {
-            Debug.Log("[4] Preparing The Game for First Time Launch.");
+            if (PlayerPrefs.HasKey("DISPLAYNAME_GUEST"))
+            {
+                Debug.Log("[4] A Registered Guest Account Was Found.");
+            }
+
+            else
+            {
+                Debug.Log("[4] Preparing The Game for First Time Launch.");
+            }
 
             /// Login as Guest with Unique DeviceID
             _customAuth.AnonymousLogin(false);
@@ -201,7 +218,18 @@ public class AuthManager : LoadManager
     // 3.1
     private void onStartGuestLoginSucceedEnter()
     {
-        Debug.Log("[5] Account Succesfully Created.");
+        if (PlayerPrefs.HasKey("DISPLAYNAME_GUEST"))
+        {
+            Debug.Log("[5] Login as " + PlayerPrefs.GetString("DISPLAYNAME_GUEST"));
+        }
+
+        else
+        {
+            Debug.Log("[5] Guest Account Succesfully Created.");
+        }
+
+        // AuthManager Process Completed...
+        _authManagerStatus = true;
     }
 
     // 3.2

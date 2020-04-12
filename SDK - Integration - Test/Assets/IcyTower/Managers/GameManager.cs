@@ -1,7 +1,7 @@
 ﻿
 using UnityEngine;
 
-[RequireComponent(typeof(ProgressBar))]
+[RequireComponent(typeof(LoadManager))]
 public class GameManager : MonoBehaviour
 {
     #region SINGLETON
@@ -12,21 +12,10 @@ public class GameManager : MonoBehaviour
     {
         if (current == null) { current = this; }
 
-        else if (current != this) { Destroy(gameObject); } 
+        else if (current != this) { Destroy(gameObject); }
+
     }
 
     #endregion
-
-    /********************************************************/
-    // LOAD SYSTEM
-
-    private LoadManager _loadManager;
-
-    /********************************************************/
-
-    private void Start()
-    {
-        _loadManager = new LoadManager(GetComponent<ProgressBar>());
-    }
 
 }

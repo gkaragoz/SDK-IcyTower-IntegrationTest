@@ -30,25 +30,6 @@ public class IT_Authentication : MonoBehaviour
         _gpgsAuth = new PlayFabGPGS(_recoverPopUpGPGS);
     }
 
-    private void Start()
-    {
-        // LoggedIn before with GPGS
-        if (_gpgsAuth.LoggedInBefore())
-        {
-            /// PlayFabGPGS handles automatically Login with GPGS
-            Debug.Log("GPGS login in automatically...");
-        }
-
-        // Not LoggedIn before with GPGS
-        else
-        {   
-            /// Login as Guest with Unique DeviceID
-            _customAuth.AnonymousLogin(false);
-
-            Debug.Log("Mobile Device login in automatically...");
-        }
-
-    }
 
     public void ConnectGPGS()
     {
