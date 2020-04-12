@@ -41,11 +41,17 @@ public class EventManager : MonoBehaviour
     // Called when google play service initialized with error.
     public event Action onStartGooglePlayInitializionFailedEnter;
 
-    // Called when existing account controls completed.
-    public event Action onStartAccountControlEnter;
+    // Called when guest account created and login successfully
+    public event Action onStartGuestLoginSucceedEnter;
 
-    // Called when automatic login completed.
-    public event Action onStartAutomaticLoginEnter;
+    // Called when guest account creation failed.
+    public event Action onStartGuestLoginFailedEnter;
+
+    // Called when google play login succeed.
+    public event Action onStartGooglePlayLoginSucceedEnter;
+
+    // Called when google play login failed.
+    public event Action onStartGooglePlayLoginFailedEnter;
 
 
     // Invoke when subscribed "onStartFacebookInitializionSucceedEnter" action
@@ -84,16 +90,28 @@ public class EventManager : MonoBehaviour
         onStartGooglePlayInitializionFailedEnter?.Invoke();
     }
 
-    // Invoke when subscribed "onStartAccountControlEnter" action
-    public void StartAccountControlEnter()
+    // Invoke when subscribed "onStartGuestLoginSucceedEnter" action
+    public void StartGuestLoginSucceedEnter()
     {
-        onStartAccountControlEnter?.Invoke();
+        onStartGuestLoginSucceedEnter?.Invoke();
     }
 
-    // Invoke when subscribed "onStartAutomaticLoginEnter" action
-    public void StartAutomaticLoginEnter()
+    // Invoke when subscribed "onStartGuestLoginFailedEnter" action
+    public void StartGuestLoginFailedEnter()
     {
-        onStartAutomaticLoginEnter?.Invoke();
+        onStartGuestLoginFailedEnter?.Invoke();
+    }
+
+    // Invoke when subscribed "onStartGooglePlayLoginSucceedEnter" action
+    public void StartGooglePlayLoginSucceedEnter()
+    {
+        onStartGooglePlayLoginSucceedEnter?.Invoke();
+    }
+
+    // Invoke when subscribed "onStartGooglePlayLoginFailedEnter" action
+    public void StartGooglePlayLoginFailedEnter()
+    {
+        onStartGooglePlayLoginFailedEnter?.Invoke();
     }
 
     #endregion
