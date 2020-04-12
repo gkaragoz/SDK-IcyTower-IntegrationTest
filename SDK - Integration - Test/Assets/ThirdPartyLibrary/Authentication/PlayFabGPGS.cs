@@ -45,8 +45,9 @@ namespace Library.Authentication.GooglePlay
             // Initialize Game Object
             _recoverPopUpMenu = _PopUpMenu;
 
-            //Remember User
-            RememberGoogleAccount();
+            // Invoke GooglePlay Inıtialization Succeed
+            EventManager.current.StartGooglePlayInitializionSucceed();
+            
         }
 
         #region AUTHENTICATE
@@ -79,6 +80,8 @@ namespace Library.Authentication.GooglePlay
                 else
                 {
                     Debug.Log("Google Failed to Authorize your login");
+
+                    EventManager.current.StartGooglePlayLoginFailedEnter();
                 }
 
             });
@@ -99,11 +102,13 @@ namespace Library.Authentication.GooglePlay
             }, (result) =>
 
             {
-                Debug.Log("Signed In as " + result.PlayFabId);
+                EventManager.current.StartGooglePlayLoginSucceedEnter();
 
                 string entityID = result.EntityToken.Entity.Id;
 
                 string entityType = result.EntityToken.Entity.Type;
+
+                Debug.Log("[6] Logged in as " + Social.localUser.userName);
 
                 LoggedIn = true; // Logged in user
 
@@ -130,6 +135,8 @@ namespace Library.Authentication.GooglePlay
         //Error Callback
         private void OnPlayFabError(PlayFabError error)
         {
+            EventManager.current.StartGooglePlayLoginFailedEnter();
+
             PlayerPrefs.SetString("GPGSAUTH", "failed"); // PlayFab GPGS Auth failed.
 
             Debug.LogError(error.Error);
@@ -142,7 +149,7 @@ namespace Library.Authentication.GooglePlay
         #region RECOVER
 
         //Remember User whose signed in with Google Acc.
-        private void RememberGoogleAccount()
+        public void RememberGoogleAccount()
         {
             if (LoggedInBefore())
             {
