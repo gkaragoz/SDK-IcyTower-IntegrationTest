@@ -52,6 +52,8 @@ public class AuthManager : LoadManager
     // Receive Internet Connection Result
     private void InternetConnectionResult()
     {
+        Debug.Log("Control Internet Connection...");
+
         if (ControlInternetConnection()) // Internet Connection Succeed
         {
             // Invoke Success Action Event Callback
@@ -71,6 +73,10 @@ public class AuthManager : LoadManager
     {
         // Update GameMode State as ONLINEMODE
         loadState = LoadState.ONLINEMODE;
+
+        authManagerStatus = true;
+
+        Debug.Log("Control Internet Connection succeed.");
     }
 
     // 1
@@ -81,6 +87,8 @@ public class AuthManager : LoadManager
 
         // AuthManager Process Completed...
         authManagerStatus = true;
+
+        Debug.Log("Control Internet Connection failed.");
     }
 
     /***********************************************************************************************************/
@@ -88,13 +96,13 @@ public class AuthManager : LoadManager
     // 2
     private void onStartFacebookSucceed( )
     {
-        
+        throw new NotImplementedException();
     }
 
     // 2
     private void onStartFacebookFailed()
     {
-
+        throw new NotImplementedException();
     }
 
     // 2

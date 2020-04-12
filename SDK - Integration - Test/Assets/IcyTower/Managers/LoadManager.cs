@@ -56,8 +56,10 @@ public class LoadManager
     {
         // Initialize GameModeManager
         gameModeManager = new GameModeManager();
+
+        return true;
         
-        return gameModeManager.ProcessComplete();
+        //return gameModeManager.ProcessComplete();
     }
 
     private bool SceneProcess()
@@ -65,7 +67,9 @@ public class LoadManager
         // Initialize SceneManager
         sceneManager = new SceneManager();
 
-        return sceneManager.ProcessComplete();
+        return true;
+
+        //return sceneManager.ProcessComplete();
     }
 
 }
