@@ -4,7 +4,6 @@ using Library.FaceBook;
 using Library.Authentication.GooglePlay;
 using Library.Authentication;
 using System;
-using UnityEngine.Purchasing;
 
 public class AuthManager : LoadManager
 {   
@@ -14,7 +13,8 @@ public class AuthManager : LoadManager
 
     private PlayFabGPGS _gpgsAuth;
 
-    private bool authManagerStatus;
+    // That's total Status
+    private bool _authManagerStatus;
 
     /// <summary>
     /// /////////////////////////// SILINECEK
@@ -40,6 +40,8 @@ public class AuthManager : LoadManager
 
     }
 
+    #region FIRST CONTROL BLOCK
+
     /***********************************************************************************************************/
     // INTERNET CONNECTION WORKSPACE
 
@@ -52,17 +54,17 @@ public class AuthManager : LoadManager
     // Receive Internet Connection Result
     private void InternetConnectionResult()
     {
-        Debug.Log("Control Internet Connection...");
+        Debug.Log("[0] Control Internet Connection...");
 
         if (ControlInternetConnection()) // Internet Connection Succeed
         {
-            // Invoke Success Action Event Callback
+            // Invoke Event Action Succeed Callback
             EventManager.current.StartInternetConnectionSuccess();
         }
 
         else { // Internet Connection Failed
 
-            // Invoke Success Action Failed Callback
+            // Invoke Event Action Failed Callback
             EventManager.current.StartInternetConnectionFailed();
         }
 
@@ -74,9 +76,11 @@ public class AuthManager : LoadManager
         // Update GameMode State as ONLINEMODE
         loadState = LoadState.ONLINEMODE;
 
-        authManagerStatus = true;
+        Debug.Log("[1] Internet Connection succeed.");
 
-        Debug.Log("Control Internet Connection succeed.");
+        // INITIALIZE SECOND CONTROL BLOCK
+        // Invock StartServices that initializes Facebook, Googleplay services before post authentication request
+        StartServices();
     }
 
     // 1
@@ -86,53 +90,166 @@ public class AuthManager : LoadManager
         loadState = LoadState.OFFLINEMODE;
 
         // AuthManager Process Completed...
-        authManagerStatus = true;
+        _authManagerStatus = true;
 
-        Debug.Log("Control Internet Connection failed.");
+        Debug.LogError("[1] Internet Connection failed.");
+
+        Debug.Log("[2] Preparing Offline Game Mode...");
     }
 
     /***********************************************************************************************************/
 
-    // 2
-    private void onStartFacebookSucceed( )
+    #endregion
+
+    /***********************************************************************************************************/
+    // AUTHENTICATION WORKSPACE - SECOND CONTROL BLOCK
+
+    // INITIALIZE SERVICES
+
+    // Facebook Service Status
+    private bool _facebookReadyFlag;
+
+    // Google Play Service Status
+    private bool _googlePlayReadyFlag;
+
+    // Make ready Services such as GooglePlay and Facebook
+    private void StartServices()
     {
-        throw new NotImplementedException();
+        _customAuth = new PlayfabCustomAuth();
+
+        // Initialize Facebook Services
+        _facebookAuth = new PlayfabFacebook(_recoverPopUpFB);
+
     }
 
-    // 2
+    // 2.1
+    private void onStartFacebookSucceed()
+    {
+        Debug.Log("[2] Initialized Facebook Services Succeed.");
+
+        // Turn Facebook flag to true
+        _facebookReadyFlag = true;
+
+        // Facebook Initializion succeed.
+        // Initialize Google Play Services
+        _gpgsAuth = new PlayFabGPGS(_recoverPopUpGPGS);
+    }
+
+    // 2.1
     private void onStartFacebookFailed()
     {
-        throw new NotImplementedException();
+        Debug.LogError("[2] Initialized Facebook Services Failed.");
+
+        // EXIT GAME
+        Debug.LogError("[3] Unexpected Issue. Please Try Again Later");
+
+        // Stop Loading Process for all control workspace
+        stopCycle = true;
+
     }
 
-    // 2
+    // 2.2
     private void onStartGooglePlaySucceed()
     {
-        throw new NotImplementedException();
+        Debug.Log("[3] Initialized Google Play Services Succeed.");
+
+        // Turn Google Play flag to true
+        _googlePlayReadyFlag = true;
+
+        // Google Play Initializion succeed.
+        // Everything is ready for Authentication.
+        StartAuthentication();
     }
 
-    // 2
+    // 2.2
     private void onStartGooglePlayFailed()
     {
-        throw new NotImplementedException();
+        Debug.LogError("[3] Initialized Google Play Services Failed.");
+
+        // EXIT GAME
+        Debug.LogError("[4] Unexpected Issue. Please Try Again Later");
+
+        // Stop Loading Process for all control workspace
+        stopCycle = true;
     }
 
-    // 3
-    private void onStartAccountControl()
+
+    private void StartAuthentication()
     {
-        throw new NotImplementedException();
+        // LoggedIn before with GPGS
+        if (_gpgsAuth.LoggedInBefore())
+        {
+            Debug.Log("[4] A Registered Account Was Found.");
+
+            // Login Google Acc. automaticly
+            _gpgsAuth.LoginPlayGameService(false); 
+
+        }
+
+        // Not LoggedIn before with GPGS
+        else
+        {
+            Debug.Log("[4] Preparing The Game for First Time Launch.");
+
+            /// Login as Guest with Unique DeviceID
+            _customAuth.AnonymousLogin(false);
+
+        }
+
+    }
+
+    // 3.1
+    private void onStartGuestLoginSucceedEnter()
+    {
+        Debug.Log("[5] Account Succesfully Created.");
+    }
+
+    // 3.2
+    private void onStartGuestLoginFailedEnter()
+    {
+        Debug.LogError("[5] Guest Account Creation Failed.");
+
+        // EXIT GAME
+        Debug.LogError("[6] Unexpected Issue. Please Try Again Later");
+
+        // Stop Loading Process for all control workspace
+        stopCycle = true;
     }
 
     // 4
-    private void onStartAutomaticLogin()
+    private void onGooglePlayLoginSucceedEnter()
     {
-        throw new NotImplementedException();
+        Debug.Log("[5] Login Google Play Succeed.");
+
+        // AuthManager Process Completed...
+        _authManagerStatus = true;
     }
 
 
-    private void OnDisable()
+    private void onGooglePlayLoginFailedEnter()
+    {
+        Debug.LogError("[5] Google Play Login Failed.");
+
+        // EXIT GAME
+        Debug.LogError("[6] Unexpected Issue. Please Try Again Later");
+
+        // Stop Loading Process for all control workspace
+        stopCycle = true;
+    }
+
+    /***********************************************************************************************************/
+
+    // Unsubcribe all action events on AuthManager
+    public void OnDisable()
     {
         HandleAuthManagerEvents(false);
+    }
+
+
+    // Define Process Status
+    public bool ProcessComplete()
+    {
+        return _authManagerStatus;
     }
 
 
@@ -147,11 +264,17 @@ public class AuthManager : LoadManager
             // Subscribe "onStartFacebookInitializionFailedEnter" action
             EventManager.current.onStartFacebookInitializionFailedEnter += onStartFacebookFailed;
 
-            // Subscribe "onStartAccountControlEnter" action
-            EventManager.current.onStartAccountControlEnter += onStartAccountControl;
+            // Subscribe "onStartGuestLoginSucceedEnter" action
+            EventManager.current.onStartGuestLoginSucceedEnter += onStartGuestLoginSucceedEnter;
 
-            // Subscribe "onStartAutomaticLoginEnter" action
-            EventManager.current.onStartAutomaticLoginEnter += onStartAutomaticLogin;
+            // Subscribe "onStartGuestLoginFailedEnter" action
+            EventManager.current.onStartGuestLoginFailedEnter += onStartGuestLoginFailedEnter;
+
+            // Subscribe "onStartGooglePlayLoginSucceedEnter" action
+            EventManager.current.onStartGooglePlayLoginSucceedEnter += onGooglePlayLoginSucceedEnter;
+
+            // Subscribe "onStartGooglePlayLoginFailedEnter" action
+            EventManager.current.onStartGooglePlayLoginFailedEnter += onGooglePlayLoginFailedEnter;
 
             // Subscribe "onStartGooglePlayInitializionSucceedEnter" action
             EventManager.current.onStartGooglePlayInitializionSucceedEnter += onStartGooglePlaySucceed;
@@ -174,11 +297,17 @@ public class AuthManager : LoadManager
             // UnSubscribe "onStartFacebookInitializionFailedEnter" action
             EventManager.current.onStartFacebookInitializionFailedEnter -= onStartFacebookFailed;
 
-            // UnSubscribe "onStartAccountControlEnter" action
-            EventManager.current.onStartAccountControlEnter -= onStartAccountControl;
+            // UnSubscribe "onStartGuestLoginSucceedEnter" action
+            EventManager.current.onStartGuestLoginSucceedEnter -= onStartGuestLoginSucceedEnter;
 
-            // UnSubscribe "onStartAutomaticLoginEnter" action
-            EventManager.current.onStartAutomaticLoginEnter -= onStartAutomaticLogin;
+            // UnSubscribe "onStartGuestLoginFailedEnter" action
+            EventManager.current.onStartGuestLoginFailedEnter -= onStartGuestLoginFailedEnter;
+
+            // UnSubscribe "onStartGooglePlayLoginSucceedEnter" action
+            EventManager.current.onStartGooglePlayLoginSucceedEnter -= onGooglePlayLoginSucceedEnter;
+
+            // UnSubscribe "onStartGooglePlayLoginFailedEnter" action
+            EventManager.current.onStartGooglePlayLoginFailedEnter -= onGooglePlayLoginFailedEnter;
 
             // UnSubscribe "onStartGooglePlayInitializionSucceedEnter" action
             EventManager.current.onStartGooglePlayInitializionSucceedEnter -= onStartGooglePlaySucceed;
@@ -195,43 +324,7 @@ public class AuthManager : LoadManager
         }
     }
 
-
-    private bool StartServices()
-    {
-        _customAuth = new PlayfabCustomAuth();
-
-        _facebookAuth = new PlayfabFacebook(_recoverPopUpFB);
-
-        _gpgsAuth = new PlayFabGPGS(_recoverPopUpGPGS);
-
-        return false;
-    }
-
-    // Define Process Status
-    public bool ProcessComplete()
-    {
-        return authManagerStatus;
-    }
-
-    private void Start()
-    {
-        // LoggedIn before with GPGS
-        if (_gpgsAuth.LoggedInBefore())
-        {
-            /// PlayFabGPGS handles automatically Login with GPGS
-            Debug.Log("GPGS login in automatically...");
-        }
-
-        // Not LoggedIn before with GPGS
-        else
-        {
-            /// Login as Guest with Unique DeviceID
-            _customAuth.AnonymousLogin(false);
-
-            Debug.Log("Mobile Device login in automatically...");
-        }
-
-    }
+   
 
 
 
