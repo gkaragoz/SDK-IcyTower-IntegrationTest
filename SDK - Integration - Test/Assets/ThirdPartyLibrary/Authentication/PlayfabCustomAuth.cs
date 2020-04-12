@@ -160,13 +160,15 @@ namespace Library.Authentication
         //Android - Login Failure CallBack Function
         private void OnLoginMobileFailure(PlayFabError error)
         {
+            EventManager.current.StartGuestLoginFailedEnter();
+
             Debug.LogError("Mobile Login Error Report: " + error.GenerateErrorReport());
         }
 
         //Android - Login Success CallBack Function
         private void OnLoginMobileSuccess(LoginResult result)
         {
-            Debug.Log("Login with DeviceID request completed Succesfuly.");
+            EventManager.current.StartGuestLoginSucceedEnter();
 
             SetDisplayName(result.PlayFabId); // Set Display Name
         }
@@ -305,6 +307,8 @@ namespace Library.Authentication
                 var requestDisplayName = new UpdateUserTitleDisplayNameRequest { DisplayName = "Guest " + PlayFabID };
 
                 PlayFabClientAPI.UpdateUserTitleDisplayName(requestDisplayName, OnDisplayNameSuccess, OnDisplayNameFailure);
+
+                Debug.Log("[6] Login in as " + "Guest " + PlayFabID);
 
             }
 
