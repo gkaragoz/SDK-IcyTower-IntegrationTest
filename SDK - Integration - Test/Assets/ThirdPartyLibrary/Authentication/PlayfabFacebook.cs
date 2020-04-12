@@ -46,6 +46,9 @@ namespace Library.FaceBook
             // Once Facebook SDK is initialized, if we are logged in, we log out to demonstrate the entire authentication cycle.
             if (GetLoggedIn())
                 FB.LogOut();
+
+            // Invoke Success Action Failed Callback
+            EventManager.current.StartFacebookInitializionSucceed();
         }
 
         //Facebook Auth. Handler
