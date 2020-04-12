@@ -44,9 +44,6 @@ namespace Library.Authentication.GooglePlay
 
             // Initialize Game Object
             _recoverPopUpMenu = _PopUpMenu;
-
-            // Invoke GooglePlay Inıtialization Succeed
-            EventManager.current.StartGooglePlayInitializionSucceed();
             
         }
 
