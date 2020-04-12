@@ -16,6 +16,8 @@ public class LoadManager
 
     protected LoadState loadState;
 
+    protected bool stopCycle;
+
     protected ProgressBar progressBar;
 
 
@@ -31,16 +33,30 @@ public class LoadManager
 
     public void StartManager() 
     {
+        Debug.LogWarning("GG");
+
         // Wait Until "All Authentication Process Complete".
-        while (!AuthProcess()) ;
+        while (!AuthProcess() && !stopCycle) ;
 
         // Wait Until "All GameMode Process Complete".
-        while (!GameModeProcess()) ;
+        while (!GameModeProcess() && !stopCycle) ;
 
         // Wait Until "All Scene Process Complete".
-        while (!SceneProcess()) ;
+        while (!SceneProcess() && !stopCycle) ;
 
         // All Process Completed, Start Game
+        if (!stopCycle)
+        {
+            // DONE
+            // START AWESOME GAME
+        }
+
+        else
+        {
+            Debug.LogError("Loading Failed. Exiting from game...");
+
+            // EXIT GAME
+        }
 
     }
 
