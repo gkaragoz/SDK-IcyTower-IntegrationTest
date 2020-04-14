@@ -54,7 +54,7 @@ public class LoadManager : MonoBehaviour
         // Wait Until "All Authentication Process Complete".
         while (!AuthProcess() && !stopCycle)
         {
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.25f);
         }
 
         // Stop Process
