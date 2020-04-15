@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Library.PlayerData.Inventory;
-using Library.PlayerData.Currency;
+using Library.Purchasing;
 
 [RequireComponent(typeof(AuthManager),typeof(GameModeManager), typeof(SceneManager))]
 public class LoadManager : MonoBehaviour
@@ -109,12 +109,7 @@ public class LoadManager : MonoBehaviour
         {
             // DONE
             // START AWESOME GAME
-            VirtDualCurrency.GetUserVirtualCurrencies("GM",55);
-
-            //CSPlayFabAsDataTable X = new CSPlayFabAsDataTable();
-
-            //Debug.Log(X.GetSingleUserData("PlayerHealth"));
-
+            Inventory.GetUserInventory();
         }
 
         else

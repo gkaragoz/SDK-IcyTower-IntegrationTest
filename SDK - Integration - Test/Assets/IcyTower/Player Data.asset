@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxCombo: 0
   _maxScore: 0
-  _maxFlore: 0
+  _maxFloor: 0
   _goldAmount: 0
   _gemAmount: 0
   _diamoundAmount: 0
