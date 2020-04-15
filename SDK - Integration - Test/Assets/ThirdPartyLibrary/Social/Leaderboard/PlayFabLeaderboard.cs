@@ -67,6 +67,20 @@ namespace Library.Social.Leaderboard
 
         }
 
+        /// </summary>
+        /// The function that handles Player Statistics Request
+        /// </summary>
+
+        public static void SubmitScores(List<StatisticUpdate> leaderboards)
+        {
+            PlayFabClientAPI.UpdatePlayerStatistics(new UpdatePlayerStatisticsRequest // Update Request
+            {
+                Statistics = leaderboards
+
+            }, result => OnStatisticsUpdated(result), FailureCallback);
+
+        }
+
         // Statistic Update Success Request Handler
         private static void OnStatisticsUpdated(UpdatePlayerStatisticsResult updateResult)
         {
