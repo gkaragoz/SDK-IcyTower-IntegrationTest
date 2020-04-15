@@ -12,15 +12,7 @@ public class GameModeManager : LoadManager
 
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    // Override Start function
+    private void Start() { }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

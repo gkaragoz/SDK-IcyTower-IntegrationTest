@@ -1,6 +1,9 @@
-﻿using System.Collections;
+﻿using Library.CloudSave;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Library.PlayerData.Inventory;
+using Library.PlayerData.Currency;
 
 [RequireComponent(typeof(AuthManager),typeof(GameModeManager), typeof(SceneManager))]
 public class LoadManager : MonoBehaviour
@@ -28,7 +31,7 @@ public class LoadManager : MonoBehaviour
 
     private void Start()
     { 
-        // Initialize Main Process
+        /// Initialize Main Process
         StartManager();
     }
     
@@ -43,7 +46,7 @@ public class LoadManager : MonoBehaviour
         /// 2 - ControlGameModeProcess - > Organizes game contents depends on which state has been selected by AuthManager like Offline Mode or Online Mode.
         /// 3 - ControlSceneProcess -> Final loading state that controls all ingame content loading completed succefully.
         /// </summary>
-
+        
         /// Start with first control manager that's AuthManager
         StartCoroutine(ControlAuthProcess());
     }
@@ -59,7 +62,7 @@ public class LoadManager : MonoBehaviour
 
         // Stop Process
         StopCoroutine(ControlAuthProcess());
-
+       
         // Start Second Stage Control
         StartCoroutine(ControlGameModeProcess());
     }
@@ -77,7 +80,8 @@ public class LoadManager : MonoBehaviour
         StopCoroutine(ControlGameModeProcess());
 
         // Start Third Stage Control
-        StartCoroutine(ControlSceneProcess());
+         StartCoroutine(ControlSceneProcess());
+        
     }
 
     // Third Stage Control -> SceneMANAGER
@@ -95,6 +99,7 @@ public class LoadManager : MonoBehaviour
         // All stage process completed. 
         // Determine the process completed as success or fail
         FinalizeAllProcess();
+        
     }
 
     private void FinalizeAllProcess( )
@@ -104,6 +109,12 @@ public class LoadManager : MonoBehaviour
         {
             // DONE
             // START AWESOME GAME
+            VirtDualCurrency.GetUserVirtualCurrencies("GM",55);
+
+            //CSPlayFabAsDataTable X = new CSPlayFabAsDataTable();
+
+            //Debug.Log(X.GetSingleUserData("PlayerHealth"));
+
         }
 
         else
@@ -111,6 +122,7 @@ public class LoadManager : MonoBehaviour
             Debug.LogError("Loading Failed. Exiting from game...");
 
             // EXIT GAME
+
         }
     }
 

@@ -31,6 +31,9 @@ public class AuthManager : LoadManager
 
     public Text _recoverPopUpGPGSText;
 
+    // Override Start function
+    private void Start() { }
+
     // Constructor that initializes Action subscriptions.
     public void StartProcess( )
     {
